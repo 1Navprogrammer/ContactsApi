@@ -1,0 +1,186 @@
+﻿
+
+<h2>My Contacts Book</h2>
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+
+<table id="tab1" width="300" border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+    </tr>
+
+</table>
+ID: <input type="text" name="id" id="id" value="" /><br />
+Name : <input type="text" name="name" id="name" value="" /><br />
+
+Email: <input type="text" name="email" id="email" value="" /><br />
+Phone: <input type="text" name="phone" id="phone" value="" /><br />
+Address: <input type="text" name="address" id="address" value="" /><br />
+
+<input type="button" name="btn" id="btn1" value="Add" />
+<input type="button" name="btn2" id="btn2" value="Delete" />
+<input type="button" name="btn3" id="btn3" value="Update" />
+
+<script>
+    $(document).ready(function () {
+
+        $("#tab1").css("display", "none");
+        $.getJSON("/api/Contacts/", function (data) {
+            $("#tab1").css("display", "block");
+            $.each(data, function (key, val) {
+                $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.email + "</td><td>" + val.phone + "</td><td>" + val.address + "</td></tr>").appendTo($("#tab1"));
+
+
+            })
+        })
+        //POST
+        $("#btn1").click(function () {
+            var n = $("#name").val();
+            var e = $("#email").val();
+            var p = $("#phone").val();
+            var a = $("#address").val();
+            $.ajax({
+
+                type: "POST",
+
+                contentType: "application/json;charset=utf-8",
+
+                url: "/api/Contacts/",
+
+                data: JSON.stringify({
+
+
+
+                    name: n,
+
+                    email: e,
+                    phone: p,
+                    address: a
+
+
+
+                }),
+
+                dataType: "JSON",
+
+                success: function (data) {
+                    $("#tab1").find("tr:gt(0)").remove();
+                    $.getJSON("/api/Contacts/", function (data) {
+                        $("#tab1").css("display", "block");
+                        $.each(data, function (key, val) {
+                            $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.email + "</td><td>" + val.phone + "</td><td>" + val.address + "</td></tr>").appendTo($("#tab1"));
+
+
+                        })
+
+                    })
+
+
+
+                }
+            });
+
+
+        })
+        //Delete
+        $("#btn2").click(function () {
+            var id = $("#id").val();
+
+            $.ajax({
+
+                type: "DELETE",
+
+                contentType: "application/json;charset=utf-8",
+
+                url: "/api/Contacts/" + $("#id").val(),
+
+                data: JSON.stringify({
+
+
+
+                    id: $("#id").val(),
+
+
+
+
+
+                }),
+
+                dataType: "JSON",
+
+                success: function (data) {
+                    $("#tab1").find("tr:gt(0)").remove();
+                    $.getJSON("/api/Contacts/", function (data) {
+                        $("#tab1").css("display", "block");
+                        $.each(data, function (key, val) {
+                             $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.email + "</td><td>" + val.phone + "</td><td>" + val.address + "</td></tr>").appendTo($("#tab1"));
+
+
+                        })
+
+                    })
+
+
+
+                }
+            });
+
+
+        })
+
+        //Update
+        $("#btn3").click(function () {
+            var id = $("#id").val();
+            var name = $("#name").val();
+            var em = $("#email").val();
+            var ph = $("#phone").val();
+            var ad = $("#address").val();
+
+            $.ajax({
+
+                type: "PUT",
+
+                contentType: "application/json;charset=utf-8",
+
+                url: "/api/Contacts/" + $("#id").val(),
+
+                data: JSON.stringify({
+
+
+                    id: $("#id").val(),
+                    name: $("#name").val(),
+                    email: em,
+                    phone: ph,
+                    address: ad
+
+                }),
+
+                dataType: "JSON",
+
+                success: function (data) {
+                    $("#tab1").find("tr:gt(0)").remove();
+                    $.getJSON("/api/Contacts/", function (data) {
+                        $("#tab1").css("display", "block");
+                        $.each(data, function (key, val) {
+                            $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.email + "</td><td>" + val.phone + "</td><td>" + val.address + "</td></tr>").appendTo($("#tab1"));
+
+
+                        })
+
+                    })
+
+
+
+                }
+            });
+
+
+        })
+    });
+
+</script>
